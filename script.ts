@@ -1,3 +1,16 @@
+interface StopwatchState {
+  elapsedTime: number;
+  intervalId: number | null;
+  status: "idle" | "started" | "paused";
+}
+
+interface TimerState {
+  totalTime: number;
+  remainingTime: number;
+  intervalId: number | null;
+  status: "idle" | "started" | "paused";
+}
+
 // Tabs
 const stopwatchTab = document.querySelector(
   "#stopwatch-tab"
@@ -11,18 +24,17 @@ const stopwatchSection = document.querySelector(
 
 const timerSection = document.querySelector("#timer-section") as HTMLElement;
 
-// Stopwatch
+// Stopwatch Elements
 const stopwatchDisplay = document.querySelector(
   "#stopwatch-display"
 ) as HTMLDivElement;
 
 const swStartBtn = document.querySelector("#sw-start") as HTMLButtonElement;
-
 const swPauseBtn = document.querySelector("#sw-pause") as HTMLButtonElement;
-
 const swResetBtn = document.querySelector("#sw-reset") as HTMLButtonElement;
+swPauseBtn.disabled = true;
 
-// Timer
+// Timer Elements
 const minutesInput = document.querySelector(
   "#minutes-input"
 ) as HTMLInputElement;
@@ -45,43 +57,171 @@ const timerResetBtn = document.querySelector(
   "#timer-reset"
 ) as HTMLButtonElement;
 
-// 1. Tab switching
+// States
+const stopwatchState: StopwatchState = {
+  elapsedTime: 0,
+  intervalId: null,
+  status: "idle",
+};
 
-stopwatchTab.addEventListener("click", () => {
+const timerState: TimerState = {
+  totalTime: 0,
+  remainingTime: 0,
+  intervalId: null,
+  status: "idle",
+};
+
+// Tab Logic
+function showStopwatch(): void {
   stopwatchTab.classList.add("active");
   timerTab.classList.remove("active");
 
   stopwatchSection.classList.add("active-section");
   timerSection.classList.remove("active-section");
-});
+}
 
-timerTab.addEventListener("click", () => {
+function showTimer(): void {
   timerTab.classList.add("active");
   stopwatchTab.classList.remove("active");
 
   timerSection.classList.add("active-section");
   stopwatchSection.classList.remove("active-section");
-});
+}
+stopwatchTab.addEventListener("click", showStopwatch);
+timerTab.addEventListener("click", showTimer);
 
-// 2. Stopwatch start
-swStartBtn.addEventListener("click", () => {});
+// Stopwatch Logic
 
-// 3. Stopwatch pause
-swPauseBtn.addEventListener("click", () => {});
+function updateStopwatchDisplay(): void {
+  stopwatchDisplay.textContent = formatTime(stopwatchState.elapsedTime);
+}
 
-// 4. Stopwatch reset
-swResetBtn.addEventListener("click", () => {});
+function startStopwatch(): void {
+  swStartBtn.disabled = true;
+  swPauseBtn.disabled = false;
+  if (stopwatchState.status === "started") {
+    return;
+  }
 
-// 5. Timer start
-timerStartBtn.addEventListener("click", () => {});
+  stopwatchState.status = "started";
 
-// 6. Timer pause
-timerPauseBtn.addEventListener("click", () => {});
+  stopwatchState.intervalId = window.setInterval(() => {
+    stopwatchState.elapsedTime++;
 
-// 7. Timer reset
-timerResetBtn.addEventListener("click", () => {});
+    updateStopwatchDisplay();
+  }, 1000);
+}
 
-// 8. Update displays
+function pauseStopwatch(): void {
+  swStartBtn.disabled = false;
+  swPauseBtn.disabled = true;
+  if (stopwatchState.intervalId !== null) {
+    clearInterval(stopwatchState.intervalId);
+  }
 
+  stopwatchState.status = "paused";
+}
 
-// 9. Input validation
+function resetStopwatch(): void {
+  pauseStopwatch();
+  stopwatchState.elapsedTime = 0;
+  updateStopwatchDisplay();
+}
+
+swStartBtn.addEventListener("click", startStopwatch);
+swPauseBtn.addEventListener("click", pauseStopwatch);
+swResetBtn.addEventListener("click", resetStopwatch);
+
+// Timer Logic
+
+function getTimerInputValues(): number {
+  const minutes = Number(minutesInput.value) || 0;
+  const seconds = Number(secondsInput.value) || 0;
+
+  return minutes * 60 + seconds;
+}
+
+function updateTimerDisplay(): void {
+  timerDisplay.textContent = formatTimerTime(timerState.remainingTime);
+}
+
+function startTimer(): void {
+  timerPauseBtn.disabled = false;
+  timerStartBtn.disabled = true;
+  if (timerState.status === "started") {
+    return;
+  }
+
+  if (timerState.remainingTime === 0) {
+    timerState.totalTime = getTimerInputValues();
+    timerState.remainingTime = timerState.totalTime;
+  }
+  if (timerState.remainingTime <= 0) {
+    return;
+  }
+
+  timerState.status = "started";
+  timerState.intervalId = window.setInterval(() => {
+    timerState.remainingTime--;
+    updateTimerDisplay();
+    if (timerState.remainingTime <= 0) {
+      pauseTimer();
+      timerState.remainingTime = 0;
+      updateTimerDisplay();
+      alert("Timer Finished!");
+    }
+  }, 1000);
+}
+
+function pauseTimer(): void {
+  timerPauseBtn.disabled = true;
+  timerStartBtn.disabled = false;
+  if (timerState.intervalId !== null) {
+    clearInterval(timerState.intervalId);
+  }
+
+  timerState.status = "paused";
+}
+
+function resetTimer(): void {
+  pauseTimer();
+  timerState.totalTime = 0;
+  timerState.remainingTime = 0;
+  minutesInput.value = "";
+  secondsInput.value = "";
+  updateTimerDisplay();
+}
+
+timerStartBtn.addEventListener("click", startTimer);
+timerPauseBtn.addEventListener("click", pauseTimer);
+timerResetBtn.addEventListener("click", resetTimer);
+
+// Utility Functions
+function formatTime(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(seconds).padStart(2, "0");
+
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
+function formatTimerTime(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(seconds).padStart(2, "0");
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+}
+
+// Initial Render
+swPauseBtn.disabled = true;
+timerPauseBtn.disabled = true;
+
+updateStopwatchDisplay();
+updateTimerDisplay();

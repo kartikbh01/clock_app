@@ -88,3 +88,16 @@ h2 {
   text-align: center;
   font-size: 18px;
 }
+
+#sw-start:disabled{
+  display:none;
+}
+#sw-pause:disabled{
+  display:none;
+}
+#timer-pause:disabled {
+  display:none;
+}
+#timer-start:disabled {
+  display:none;
+}
