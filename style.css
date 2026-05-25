@@ -1,0 +1,90 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+}
+
+.app {
+  width: 600px;
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.tab.active {
+  background-color: #3b3b3b;
+  color: white;
+}
+
+.section {
+  display: none;
+  text-align: center;
+}
+
+.active-section {
+  display: block;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.display {
+  font-size: 42px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.controls button {
+  padding: 10px 16px;
+  border: none;
+  background-color: #3b3b3b;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.timer-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.timer-inputs input {
+  width: 70px;
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+}

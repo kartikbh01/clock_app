@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timer & Stopwatch</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Tabs -->
+      <div class="tabs">
+        <button id="stopwatch-tab" class="tab active">Stopwatch</button>
+        <button id="timer-tab" class="tab">Timer</button>
+      </div>
+
+      <!-- Stopwatch -->
+      <section id="stopwatch-section" class="section active-section">
+        <h2>Stopwatch</h2>
+
+        <div id="stopwatch-display" class="display">
+          00:00:00
+        </div>
+
+        <div class="controls">
+          <button id="sw-start">Start</button>
+          <button id="sw-pause">Pause</button>
+          <button id="sw-reset">Reset</button>
+        </div>
+      </section>
+
+      <!-- Timer -->
+      <section id="timer-section" class="section">
+        <h2>Timer</h2>
+
+        <div class="timer-inputs">
+          <input
+            type="number"
+            id="minutes-input"
+            placeholder="MM"
+            min="0"
+          />
+
+          <span>:</span>
+
+          <input
+            type="number"
+            id="seconds-input"
+            placeholder="SS"
+            min="0"
+            max="59"
+          />
+        </div>
+
+        <div id="timer-display" class="display">
+          00:00
+        </div>
+
+        <div class="controls">
+          <button id="timer-start">Start</button>
+          <button id="timer-pause">Pause</button>
+          <button id="timer-reset">Reset</button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
